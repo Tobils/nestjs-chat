@@ -14,7 +14,7 @@ const app = new Vue({
        name: this.name,
        text: this.text
       }
-      this.socket.emit('msgToServer', message)
+      this.socket.emit('createChat', message)
       this.text = ''
      }
     },
@@ -27,7 +27,7 @@ const app = new Vue({
    },
     created() {
      this.socket = io('http://localhost:3000')
-     this.socket.on('msgToClient', (message) => {
+     this.socket.on('createChat', (message) => {
       this.receivedMessage(message)
      })
     }

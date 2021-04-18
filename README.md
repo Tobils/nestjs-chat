@@ -52,6 +52,13 @@ npm install --save @nestjs/typeorm typeorm mysql2
 
 npm i bcrypt
 npm i -D @types/bcrypt
+
+#  generate jwt-key
+openssl genrsa -out jwt-key/private.pem -aes256 4096
+openssl rsa -pubout -in jwt-key/private.pem -out jwt-key/public.pem
+
+npm i --save @nestjs/config
+npm install jsonwebtoken
 ```
 
 ## Running the app

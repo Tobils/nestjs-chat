@@ -1,10 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { CreateEmailDto } from 'src/email/dto/create-email.dto';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { EmailService } from 'src/email/email.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dto/login-dto';
 import { RegisterDto } from './dto/register-dto';
+import * as jwt from 'jsonwebtoken';
+import { JwtPayload, privateSecret, signOptions } from 'src/config/utils';
 
 @Injectable()
 export class AuthService {
@@ -19,11 +20,40 @@ export class AuthService {
         const createUserDto: CreateUserDto = registerDto
 
         try {
-            await this.userService.create(createUserDto)
+            const {uuid} = await this.userService.create(createUserDto)
+            const access_token = await this.generateToken({uuid})
+            return {
+                message: 'success to registered !',
+                payload: {
+                    access_token: access_token
+                }
+            }
+
         } catch (error) {
-            
+            throw new HttpException(
+                {
+                    statusCode: HttpStatus.UNPROCESSABLE_ENTITY, 
+                    data: {message: error}
+                }, HttpStatus.UNPROCESSABLE_ENTITY)
         }
     }
 
-    async login(loginDto: LoginDto){}
+
+    async login(loginDto: LoginDto){
+        const { email, password } = loginDto
+        const { uuid } = await this.emailService.validatePassword(email, password)
+
+        const access_token = await this.generateToken({uuid})
+            return {
+                message: 'success to registered !',
+                payload: {
+                    access_token: access_token
+                }
+            }
+    }
+
+
+    async generateToken(jwtPayload: JwtPayload){
+        return await jwt.sign(jwtPayload, privateSecret, signOptions)
+    }
 }

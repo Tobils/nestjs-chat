@@ -35,9 +35,6 @@ export class EmailService {
         }
     }
 
-
-
-
     async validatePassword(email: string, password: string): Promise<Email>{
         const mail = await this.emailRepository.findOneOrFail({email: email})
         if(typeof mail == 'undefined'){

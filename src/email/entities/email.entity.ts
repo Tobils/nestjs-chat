@@ -1,7 +1,9 @@
 import { User } from "src/user/entities/user.entity";
-import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import * as bcrypt from 'bcrypt';
 
+@Entity('email')
+@Unique(['email'])
 export class Email extends BaseEntity {
 
     @PrimaryGeneratedColumn('uuid')
